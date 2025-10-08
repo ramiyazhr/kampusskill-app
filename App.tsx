@@ -17,8 +17,9 @@ type Page = 'home' | 'profile' | 'admin';
 const AppContent: React.FC = () => {
     const { user } = useAuth();
 
-    if (!user) {
-        return <AuthPage />;
+if (!user) {
+    return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>App Berhasil Jalan 🚀</div>;
+
     }
 
     const [currentPage, setCurrentPage] = useState<Page>(user.role === 'admin' ? 'admin' : 'home');
