@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { Service, NewServiceData, Rating } from '../types';
 import { getInitialData, saveData } from '../services/dataService';
@@ -33,14 +32,23 @@ export const ServicesProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     useEffect(() => {
         setLoading(true);
+        // This effect now re-syncs data from localStorage whenever the user logs in or out.
+        // This ensures data consistency across different user sessions on the same browser.
         setTimeout(() => {
             const { services: initialServices } = getInitialData();
             setServices(initialServices);
-            const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-            setFavorites(storedFavorites);
+            
+            // Favorites are now stored per-user to prevent conflicts.
+            if (user) {
+                const storedFavorites = JSON.parse(localStorage.getItem(`favorites_${user.id}`) || '[]');
+                setFavorites(storedFavorites);
+            } else {
+                setFavorites([]); // Clear favorites when logged out
+            }
             setLoading(false);
         }, 500);
-    }, []);
+    }, [user]); // Re-run effect when user changes
+
 
     const updateAndSaveServices = useCallback((newServices: Service[]) => {
         setServices(newServices);
@@ -143,12 +151,16 @@ export const ServicesProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }, [services]);
     
     const toggleFavorite = useCallback((serviceId: string) => {
+        if (!user) {
+            addToast("Anda harus login untuk mengelola favorit.", "error");
+            return;
+        }
         const newFavorites = favorites.includes(serviceId)
             ? favorites.filter(id => id !== serviceId)
             : [...favorites, serviceId];
         setFavorites(newFavorites);
-        localStorage.setItem('favorites', JSON.stringify(newFavorites));
-    }, [favorites]);
+        localStorage.setItem(`favorites_${user.id}`, JSON.stringify(newFavorites));
+    }, [favorites, user, addToast]);
 
     const isFavorite = useCallback((serviceId: string) => {
         return favorites.includes(serviceId);

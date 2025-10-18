@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useServices } from '../contexts/ServicesContext';
@@ -13,7 +12,7 @@ interface ProfilePageProps {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ onViewDetail }) => {
     const { user } = useAuth();
-    const { services, deleteService } = useServices();
+    const { services, deleteService, isFavorite } = useServices();
     const [editingService, setEditingService] = useState<Service | null>(null);
     const [activeTab, setActiveTab] = useState<'myServices' | 'favorites'>('myServices');
 
@@ -26,7 +25,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onViewDetail }) => {
     }
     
     const myServices = services.filter(s => s.providerId === user.id && s.status !== 'deleted');
-    const favoriteServices = services.filter(s => localStorage.getItem('favorites')?.includes(s.id));
+    const favoriteServices = services.filter(s => isFavorite(s.id));
 
     const handleDelete = (serviceId: string) => {
         if (window.confirm("Apakah Anda yakin ingin menghapus jasa ini?")) {

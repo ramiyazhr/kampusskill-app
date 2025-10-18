@@ -109,8 +109,8 @@ const ServiceList: React.FC<ServiceListProps> = ({ onViewDetail }) => {
                         </div>
                     ) : (
                         <div className="text-center py-16">
-                            <h2 className="text-2xl font-semibold text-slate-400">Oops! Jasa tidak ditemukan.</h2>
-                            <p className="text-slate-500 mt-2">Coba ubah kata kunci pencarian atau filter Anda.</p>
+                            <h2 className="text-2xl font-semibold text-slate-400">Belum Ada Jasa yang Tersedia</h2>
+                            <p className="text-slate-500 mt-2">Saat ini belum ada jasa yang diposting. Coba lagi nanti atau jadilah yang pertama memposting!</p>
                         </div>
                     )}
                 </div>
